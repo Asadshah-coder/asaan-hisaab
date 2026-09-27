@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zakat Calculator Pakistan 2026 – Cash, Gold, Silver & Investments</title>
+<meta name="description" content="Free zakat calculator for Pakistan. Calculate 2.5% zakat on cash, gold, silver, investments and business assets with updated nisab values.">
+<style>
+  *{box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f2f7f4;color:#1d2b24;margin:0;padding:0}
+  .zk{max-width:700px;margin:0 auto;padding:24px 16px 48px}
+  .zk h1{font-size:1.6rem;margin:0 0 6px;color:#0a5f3d}
+  .zk .sub{color:#5c6f64;margin:0 0 20px;font-size:.95rem}
+  .card{background:#fff;border:1px solid #dde8e1;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(10,95,61,.06)}
+  .card h2{font-size:1.05rem;margin:0 0 12px;color:#0a5f3d}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){.row{grid-template-columns:1fr}}
+  label{display:block;font-size:.82rem;color:#5c6f64;margin-bottom:4px;font-weight:600}
+  input[type=number]{width:100%;padding:10px 12px;border:1.5px solid #dde8e1;border-radius:9px;font-size:1rem;outline:none}
+  input[type=number]:focus{border-color:#0d7a4f}
+  .field{margin-bottom:12px}
+  .nisab-pick{display:flex;gap:10px;margin-bottom:12px}
+  .nisab-pick label{flex:1;border:1.5px solid #dde8e1;border-radius:10px;padding:10px;text-align:center;cursor:pointer;font-size:.9rem;color:#1d2b24;margin:0}
+  .nisab-pick input{display:none}
+  .nisab-pick input:checked+span{font-weight:700;color:#0a5f3d}
+  .nisab-pick label:has(input:checked){border-color:#0d7a4f;background:#eaf5ee}
+  .result{background:linear-gradient(135deg,#0d7a4f,#0a5f3d);color:#fff;border-radius:14px;padding:22px;text-align:center;margin-bottom:16px}
+  .result .amt{font-size:2.2rem;font-weight:800;margin:6px 0}
+  .result .lbl{opacity:.85;font-size:.9rem}
+  .breakdown{font-size:.9rem;width:100%;border-collapse:collapse;margin-top:6px}
+  .breakdown td{padding:7px 4px;border-bottom:1px dashed #dde8e1}
+  .breakdown td:last-child{text-align:right;font-weight:600}
+  .note{font-size:.8rem;color:#5c6f64;background:#fff8e6;border:1px solid #f0dfa8;border-radius:10px;padding:12px 14px}
+  .faq{font-size:.88rem;color:#3c4c44}
+  .faq summary{cursor:pointer;font-weight:600;color:#0a5f3d;padding:6px 0}
+</style>
+</head>
+<body>
+<div class="zk">
+  <h1>🕌 Zakat Calculator Pakistan</h1>
+  <p class="sub">Calculate your 2.5% zakat on cash, gold, silver, investments & business assets — free, private, instant.</p>
+
+  <div class="card">
+    <h2>Nisab Threshold</h2>
+    <div class="nisab-pick">
+      <label><input type="radio" name="nisab" value="silver" checked><span>🥈 Silver Nisab (52.5 tola) — recommended</span></label>
+      <label><input type="radio" name="nisab" value="gold"><span>🥇 Gold Nisab (7.5 tola)</span></label>
+    </div>
+    <div class="row">
+      <div class="field"><label>Gold rate per tola (PKR)</label><input type="number" id="goldRate" value="450000" min="0"></div>
+      <div class="field"><label>Silver rate per tola (PKR)</label><input type="number" id="silRate" value="6800" min="0"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Gold & Silver Holdings</h2>
+    <div class="row">
+      <div class="field"><label>Gold (tola)</label><input type="number" id="goldTola" value="0" min="0" step="0.01"></div>
+      <div class="field"><label>Silver (tola)</label><input type="number" id="silTola" value="0" min="0" step="0.01"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Other Zakatable Assets (PKR)</h2>
+    <div class="row">
+      <div class="field"><label>Cash in hand</label><input type="number" id="cash" value="0" min="0"></div>
+      <div class="field"><label>Bank balance / savings</label><input type="number" id="bank" value="0" min="0"></div>
+      <div class="field"><label>Investments (stocks, funds)</label><input type="number" id="invest" value="0" min="0"></div>
+      <div class="field"><label>Business stock / goods</label><input type="number" id="stock" value="0" min="0"></div>
+      <div class="field"><label>Money lent to others</label><input type="number" id="loans" value="0" min="0"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Liabilities (PKR)</h2>
+    <div class="row">
+      <div class="field"><label>Debts you owe</label><input type="number" id="debts" value="0" min="0"></div>
+      <div class="field"><label>Due bills / expenses</label><input type="number" id="bills" value="0" min="0"></div>
+    </div>
+  </div>
+
+  <div class="result" id="resultBox">
+    <div class="lbl">Your Zakat Due</div>
+    <div class="amt" id="zakatAmt">PKR 0</div>
+    <div class="lbl" id="zakatMsg">Enter your assets above</div>
+  </div>
+
+  <div class="card">
+    <h2>Breakdown</h2>
+    <table class="breakdown">
+      <tr><td>Total zakatable assets</td><td id="bdAssets">PKR 0</td></tr>
+      <tr><td>Less: liabilities</td><td id="bdLiab">PKR 0</td></tr>
+      <tr><td>Net zakatable wealth</td><td id="bdNet">PKR 0</td></tr>
+      <tr><td>Nisab threshold</td><td id="bdNisab">PKR 0</td></tr>
+      <tr><td>Zakat rate</td><td>2.5%</td></tr>
+    </table>
+  </div>
+
+  <div class="note">⚠️ This is an estimate for guidance. Zakat is due when net wealth exceeds nisab and has been held for one lunar year. For personal rulings, consult a qualified scholar.</div>
+
+  <div class="card faq" style="margin-top:16px">
+    <h2>FAQs</h2>
+    <details><summary>What is nisab?</summary><p>The minimum wealth threshold for zakat: 7.5 tola (87.48g) of gold or 52.5 tola (612.36g) of silver. Scholars recommend the silver nisab as it brings more people into giving.</p></details>
+    <details><summary>Is zakat 2.5%?</summary><p>Yes — 2.5% (1/40th) of net zakatable wealth held for one lunar year.</p></details>
+    <details><summary>Are my house and car included?</summary><p>No. Personal-use items (home, car, clothing, furniture) are exempt. Only wealth held as cash, metals, investments, or trade goods counts.</p></details>
+  </div>
+</div>
+
+<script>
+function num(id){var v=parseFloat(document.getElementById(id).value);return isNaN(v)?0:v;}
+function fmt(n){return 'PKR '+Math.round(n).toLocaleString('en-US');}
+function calc(){
+  var goldVal=num('goldTola')*num('goldRate'), silVal=num('silTola')*num('silRate');
+  var assets=goldVal+silVal+num('cash')+num('bank')+num('invest')+num('stock')+num('loans');
+  var liab=num('debts')+num('bills');
+  var net=assets-liab;
+  var type=document.querySelector('input[name=nisab]:checked').value;
+  var nisab=type==='gold'?7.5*num('goldRate'):52.5*num('silRate');
+  var due=nisab>0&&net>=nisab, zakat=due?net*0.025:0;
+  document.getElementById('zakatAmt').textContent=fmt(zakat);
+  document.getElementById('zakatMsg').textContent=due?'2.5% of your net zakatable wealth — may Allah accept it 🤲':(net<0?'Your liabilities exceed assets':'Your wealth is below nisab — no zakat due');
+  document.getElementById('bdAssets').textContent=fmt(assets);
+  document.getElementById('bdLiab').textContent=fmt(liab);
+  document.getElementById('bdNet').textContent=fmt(net);
+  document.getElementById('bdNisab').textContent=fmt(nisab);
+}
+document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc);});
+calc();
+</script>
+</body>
+</html>

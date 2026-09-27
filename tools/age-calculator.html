@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age Calculator – Exact Age in Years, Months & Days</title>
+<meta name="description" content="Free age calculator. Enter your date of birth to get your exact age in years, months and days, total days lived, and next birthday countdown.">
+<style>
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f2f7f4;color:#1d2b24;margin:0;padding:0}
+.tool{max-width:700px;margin:0 auto;padding:24px 16px 48px}
+.tool h1{font-size:1.6rem;margin:0 0 6px;color:#0a5f3d}
+.sub{color:#5c6f64;margin:0 0 20px;font-size:.95rem}
+.card{background:#fff;border:1px solid #dde8e1;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(10,95,61,.06)}
+.card h2{font-size:1.05rem;margin:0 0 12px;color:#0a5f3d}
+label{display:block;font-size:.82rem;color:#5c6f64;margin-bottom:4px;font-weight:600}
+input[type=date]{width:100%;padding:10px 12px;border:1.5px solid #dde8e1;border-radius:9px;font-size:1rem;outline:none}
+input[type=date]:focus{border-color:#0d7a4f}
+.result{background:linear-gradient(135deg,#0d7a4f,#0a5f3d);color:#fff;border-radius:14px;padding:22px;margin-bottom:16px}
+.result .amt{font-size:1.7rem;font-weight:800;margin:6px 0}
+.result .lbl{opacity:.85;font-size:.9rem}
+.grid2{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr 1fr}}
+.stat{background:rgba(255,255,255,.12);border-radius:10px;padding:10px}
+.stat .v{font-size:1.05rem;font-weight:800}
+.stat .l{font-size:.75rem;opacity:.85}
+.faq{font-size:.88rem;color:#3c4c44}
+.faq summary{cursor:pointer;font-weight:600;color:#0a5f3d;padding:6px 0}
+</style>
+</head>
+<body>
+<div class="tool">
+<h1>🎂 Age Calculator</h1>
+<p class="sub">Find your exact age — plus fun stats like total days lived and your next birthday.</p>
+<div class="card">
+<label>Date of birth</label>
+<input type="date" id="dob" onchange="calc()">
+</div>
+<div class="result" id="resBox" style="display:none">
+<div class="lbl">Your exact age</div>
+<div class="amt" id="rAge">—</div>
+<div class="grid2">
+<div class="stat"><div class="v" id="sDays">0</div><div class="l">Total days lived</div></div>
+<div class="stat"><div class="v" id="sWeeks">0</div><div class="l">Total weeks</div></div>
+<div class="stat"><div class="v" id="sHours">0</div><div class="l">Total hours</div></div>
+<div class="stat"><div class="v" id="sBorn">—</div><div class="l">Born on</div></div>
+<div class="stat"><div class="v" id="sNext">—</div><div class="l">Next birthday in</div></div>
+<div class="stat"><div class="v" id="sZodiac">—</div><div class="l">Zodiac sign</div></div>
+</div>
+</div>
+<div class="card faq">
+<h2>FAQs</h2>
+<details><summary>How is age calculated?</summary><p>We compare your birth date with today's date, borrowing days and months correctly across month lengths and leap years.</p></details>
+<details><summary>What is my zodiac sign based on?</summary><p>Western zodiac, determined by your birth month and day.</p></details>
+</div>
+</div>
+<script>
+document.getElementById('dob').max=new Date().toISOString().split('T')[0];
+function zodiac(m,d){
+var z=[["Capricorn",19],["Aquarius",18],["Pisces",20],["Aries",19],["Taurus",20],["Gemini",20],["Cancer",22],["Leo",22],["Virgo",22],["Libra",22],["Scorpio",21],["Sagittarius",21],["Capricorn",31]];
+return d<=z[m][1]?z[m][0]:z[(m+1)%12][0];
+}
+function calc(){
+var v=document.getElementById('dob').value,box=document.getElementById('resBox');
+if(!v){box.style.display='none';return;}
+var dob=new Date(v+'T00:00:00'),now=new Date();
+if(dob>now){box.style.display='none';return;}
+var y=now.getFullYear()-dob.getFullYear(),m=now.getMonth()-dob.getMonth(),d=now.getDate()-dob.getDate();
+if(d<0){m--;d+=new Date(now.getFullYear(),now.getMonth(),0).getDate();}
+if(m<0){y--;m+=12;}
+var days=Math.floor((now-dob)/86400000);
+document.getElementById('rAge').textContent=y+' years, '+m+' months, '+d+' days';
+document.getElementById('sDays').textContent=days.toLocaleString('en-US');
+document.getElementById('sWeeks').textContent=Math.floor(days/7).toLocaleString('en-US');
+document.getElementById('sHours').textContent=(days*24).toLocaleString('en-US');
+document.getElementById('sBorn').textContent=dob.toLocaleDateString('en-US',{weekday:'long'});
+var nb=new Date(now.getFullYear(),dob.getMonth(),dob.getDate());
+if(nb<=now)nb=new Date(now.getFullYear()+1,dob.getMonth(),dob.getDate());
+document.getElementById('sNext').textContent=Math.ceil((nb-now)/86400000)+' days';
+document.getElementById('sZodiac').textContent=zodiac(dob.getMonth(),dob.getDate());
+box.style.display='block';
+}
+</script>
+</body>
+</html>

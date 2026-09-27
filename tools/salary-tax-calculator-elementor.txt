@@ -1,0 +1,110 @@
+<style>
+  *{box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f2f5f7;color:#1d262b;margin:0;padding:0}
+  .tx{max-width:700px;margin:0 auto;padding:24px 16px 48px}
+  .tx h1{font-size:1.6rem;margin:0 0 6px;color:#0b4f6c}
+  .tx .sub{color:#5c6f6e;margin:0 0 20px;font-size:.95rem}
+  .badge{display:inline-block;background:#e6f4ea;color:#0b6b3a;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:12px}
+  .card{background:#fff;border:1px solid #dde5e8;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(11,79,108,.06)}
+  .card h2{font-size:1.05rem;margin:0 0 12px;color:#0b4f6c}
+  .toggle{display:flex;gap:8px;margin-bottom:14px}
+  .toggle button{flex:1;padding:10px;border:1.5px solid #dde5e8;background:#fff;border-radius:9px;font-size:.95rem;cursor:pointer;color:#1d262b}
+  .toggle button.on{border-color:#0b6b8f;background:#eaf4f8;font-weight:700;color:#0b4f6c}
+  label{display:block;font-size:.82rem;color:#5c6f6e;margin-bottom:4px;font-weight:600}
+  input[type=number]{width:100%;padding:12px;border:1.5px solid #dde5e8;border-radius:9px;font-size:1.1rem;outline:none}
+  input[type=number]:focus{border-color:#0b6b8f}
+  .result{background:linear-gradient(135deg,#0b6b8f,#0b4f6c);color:#fff;border-radius:14px;padding:22px;margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  @media(max-width:520px){.grid{grid-template-columns:1fr}}
+  .stat{background:rgba(255,255,255,.12);border-radius:10px;padding:12px}
+  .stat .v{font-size:1.25rem;font-weight:800}
+  .stat .l{font-size:.78rem;opacity:.85}
+  .big{font-size:2rem;font-weight:800}
+  table.slabs{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:8px}
+  table.slabs th,table.slabs td{padding:8px 6px;border-bottom:1px solid #eef2f4;text-align:left}
+  table.slabs th{color:#0b4f6c;font-size:.78rem;text-transform:uppercase;letter-spacing:.4px}
+  table.slabs td:last-child,table.slabs th:last-child{text-align:right}
+  table.slabs tr.hit td{background:#eaf4f8;font-weight:700}
+  .note{font-size:.8rem;color:#5c6f6e;background:#fff8e6;border:1px solid #f0dfa8;border-radius:10px;padding:12px 14px}
+  .faq{font-size:.88rem;color:#3c4c4c}
+  .faq summary{cursor:pointer;font-weight:600;color:#0b4f6c;padding:6px 0}
+</style>
+<div class="tx">
+  <span class="badge">✓ Updated for FY 2026-27 (Finance Act 2026)</span>
+  <h1>🇵🇰 Salary Tax Calculator Pakistan</h1>
+  <p class="sub">Calculate your FBR income tax, monthly deduction & take-home pay with the latest 2026-27 slabs.</p>
+
+  <div class="card">
+    <div class="toggle">
+      <button id="btnM" class="on" onclick="setMode('m')">Monthly Salary</button>
+      <button id="btnA" onclick="setMode('a')">Annual Salary</button>
+    </div>
+    <label id="salLabel">Gross monthly salary (PKR)</label>
+    <input type="number" id="salary" value="100000" min="0" oninput="calc()">
+  </div>
+
+  <div class="result">
+    <div style="font-size:.85rem;opacity:.85">Estimated annual income tax</div>
+    <div class="big" id="rTax">PKR 0</div>
+    <div class="grid">
+      <div class="stat"><div class="v" id="rMTax">PKR 0</div><div class="l">Monthly tax deduction</div></div>
+      <div class="stat"><div class="v" id="rTake">PKR 0</div><div class="l">Monthly take-home pay</div></div>
+      <div class="stat"><div class="v" id="rEff">0%</div><div class="l">Effective tax rate</div></div>
+      <div class="stat"><div class="v" id="rMarg">0%</div><div class="l">Your tax slab (marginal rate)</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Slab-wise Breakdown (FY 2026-27)</h2>
+    <table class="slabs">
+      <tr><th>Annual Income</th><th>Rate</th><th>Tax</th></tr>
+      <tbody id="slabBody"></tbody>
+    </table>
+  </div>
+
+  <div class="note">⚠️ Estimate only, based on Finance Act 2026 salaried slabs. Assumes full salary is taxable (no deductions/allowances). The 9% surcharge on high incomes has been abolished for FY 2026-27.</div>
+
+  <div class="card faq" style="margin-top:16px">
+    <h2>FAQs</h2>
+    <details><summary>What is the tax-free salary limit in Pakistan?</summary><p>Annual salary up to <b>PKR 600,000</b> (PKR 50,000/month) is fully tax-free for salaried individuals in FY 2026-27.</p></details>
+    <details><summary>How is salary tax deducted?</summary><p>Your employer deducts 1/12th of your estimated annual tax from each month's salary under Section 149 and deposits it with FBR.</p></details>
+    <details><summary>What changed in Budget 2026-27?</summary><p>Rates were cut in four slabs (e.g. 23%→20%, 30%→25%), new intermediate slabs were added, and the top 35% rate now applies only above PKR 7 million.</p></details>
+  </div>
+</div>
+
+<script>
+var mode='m';
+var SLABS=[
+  {upto:600000,  base:0,       rate:0,    label:'Up to 600K'},
+  {upto:1200000, base:0,       rate:0.01, label:'600K – 1.2M'},
+  {upto:2200000, base:6000,    rate:0.11, label:'1.2M – 2.2M'},
+  {upto:3200000, base:116000,  rate:0.20, label:'2.2M – 3.2M'},
+  {upto:4100000, base:316000,  rate:0.25, label:'3.2M – 4.1M'},
+  {upto:5600000, base:541000,  rate:0.29, label:'4.1M – 5.6M'},
+  {upto:7000000, base:976000,  rate:0.32, label:'5.6M – 7M'},
+  {upto:Infinity,base:1424000, rate:0.35, label:'Above 7M'}
+];
+function setMode(m){mode=m;document.getElementById('btnM').className=m==='m'?'on':'';document.getElementById('btnA').className=m==='a'?'on':'';document.getElementById('salLabel').textContent=m==='m'?'Gross monthly salary (PKR)':'Gross annual salary (PKR)';calc();}
+function fmt(n){return 'PKR '+Math.round(n).toLocaleString('en-US');}
+function calc(){
+  var v=parseFloat(document.getElementById('salary').value); if(isNaN(v)||v<0)v=0;
+  var annual=mode==='m'?v*12:v;
+  var tax=0,prev=0,hit=-1,rows='';
+  for(var i=0;i<SLABS.length;i++){
+    var s=SLABS[i], inSlab=Math.max(0,Math.min(annual,s.upto)-prev), t=inSlab*s.rate;
+    if(hit<0&&annual<=s.upto)hit=i;
+    rows+='<tr'+(i===hit?' class="hit"':'')+'><td>'+s.label+'</td><td>'+(Math.round(s.rate*100))+'%</td><td>'+fmt(t)+'</td></tr>';
+    prev=s.upto;
+  }
+  if(hit<0)hit=0;
+  tax=SLABS[hit].base+SLABS[hit].rate*(annual-(hit>0?SLABS[hit-1].upto:0));
+  if(annual<=600000){tax=0;hit=0;}
+  document.getElementById('slabBody').innerHTML=rows;
+  document.getElementById('rTax').textContent=fmt(tax);
+  document.getElementById('rMTax').textContent=fmt(tax/12);
+  document.getElementById('rTake').textContent=fmt((annual-tax)/12);
+  document.getElementById('rEff').textContent=annual>0?(tax/annual*100).toFixed(2)+'%':'0%';
+  document.getElementById('rMarg').textContent=(Math.round(SLABS[hit].rate*100))+'%';
+}
+calc();
+</script>

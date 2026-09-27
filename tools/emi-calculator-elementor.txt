@@ -1,0 +1,75 @@
+<style>
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f2f7f4;color:#1d2b24;margin:0;padding:0}
+.tool{max-width:700px;margin:0 auto;padding:24px 16px 48px}
+.tool h1{font-size:1.6rem;margin:0 0 6px;color:#0a5f3d}
+.sub{color:#5c6f64;margin:0 0 20px;font-size:.95rem}
+.card{background:#fff;border:1px solid #dde8e1;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(10,95,61,.06)}
+.card h2{font-size:1.05rem;margin:0 0 12px;color:#0a5f3d}
+label{display:block;font-size:.82rem;color:#5c6f64;margin-bottom:4px;font-weight:600}
+input[type=number],select{width:100%;padding:10px 12px;border:1.5px solid #dde8e1;border-radius:9px;font-size:1rem;outline:none;background:#fff}
+input:focus,select:focus{border-color:#0d7a4f}
+.field{margin-bottom:12px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+.result{background:linear-gradient(135deg,#0d7a4f,#0a5f3d);color:#fff;border-radius:14px;padding:22px;text-align:center;margin-bottom:16px}
+.result .amt{font-size:2.2rem;font-weight:800;margin:6px 0}
+.result .lbl{opacity:.85;font-size:.9rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.stat{background:rgba(255,255,255,.12);border-radius:10px;padding:10px}
+.stat .v{font-size:1.1rem;font-weight:800}
+.stat .l{font-size:.75rem;opacity:.85}
+.split{display:flex;height:14px;border-radius:7px;overflow:hidden;margin-top:14px}
+.split .p{background:#ffd166}.split .i{background:rgba(255,255,255,.45)}
+.legend{display:flex;justify-content:center;gap:16px;font-size:.78rem;margin-top:8px;opacity:.9}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.faq{font-size:.88rem;color:#3c4c44}
+.faq summary{cursor:pointer;font-weight:600;color:#0a5f3d;padding:6px 0}
+.note{font-size:.8rem;color:#5c6f64;background:#fff8e6;border:1px solid #f0dfa8;border-radius:10px;padding:12px 14px}
+</style>
+<div class="tool">
+<h1>🏦 EMI Calculator Pakistan</h1>
+<p class="sub">Calculate monthly installments for car, home & personal loans.</p>
+<div class="card">
+<div class="field"><label>Loan amount (PKR)</label><input type="number" id="p" value="1000000" min="0" oninput="calc()"></div>
+<div class="row">
+<div class="field"><label>Annual interest rate (%)</label><input type="number" id="r" value="22" min="0" step="0.1" oninput="calc()"></div>
+<div class="field"><label>Loan tenure</label><div style="display:flex;gap:8px"><input type="number" id="t" value="5" min="1" oninput="calc()" style="flex:1"><select id="tu" onchange="calc()" style="width:110px"><option value="y">Years</option><option value="m">Months</option></select></div></div>
+</div>
+</div>
+<div class="result">
+<div class="lbl">Monthly installment (EMI)</div>
+<div class="amt" id="rEmi">PKR 0</div>
+<div class="grid2">
+<div class="stat"><div class="v" id="rInt">PKR 0</div><div class="l">Total interest</div></div>
+<div class="stat"><div class="v" id="rTot">PKR 0</div><div class="l">Total payment</div></div>
+</div>
+<div class="split"><div class="p" id="spP" style="width:50%"></div><div class="i" id="spI" style="width:50%"></div></div>
+<div class="legend"><span><span class="dot" style="background:#ffd166"></span>Principal</span><span><span class="dot" style="background:rgba(255,255,255,.7)"></span>Interest</span></div>
+</div>
+<div class="note">⚠️ Indicative calculation using the reducing-balance method. Actual bank offers may include processing fees, insurance, and taxes.</div>
+<div class="card faq" style="margin-top:16px">
+<h2>FAQs</h2>
+<details><summary>What is EMI?</summary><p>Equated Monthly Installment — a fixed amount you pay every month towards your loan, covering both principal and interest.</p></details>
+<details><summary>How can I reduce my EMI?</summary><p>Choose a longer tenure (pay more interest overall), negotiate a lower rate, or make a bigger down payment.</p></details>
+</div>
+</div>
+<script>
+function fmt(n){return 'PKR '+Math.round(n).toLocaleString('en-US');}
+function calc(){
+var P=parseFloat(document.getElementById('p').value)||0,
+annual=parseFloat(document.getElementById('r').value)||0,
+t=parseFloat(document.getElementById('t').value)||0;
+var n=document.getElementById('tu').value==='y'?t*12:t;
+var r=annual/12/100,emi=0;
+if(n>0){emi=r>0?P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1):P/n;}
+var tot=emi*n,intr=tot-P;
+document.getElementById('rEmi').textContent=fmt(emi);
+document.getElementById('rInt').textContent=fmt(intr);
+document.getElementById('rTot').textContent=fmt(tot);
+var pp=tot>0?P/tot*100:50;
+document.getElementById('spP').style.width=pp+'%';
+document.getElementById('spI').style.width=(100-pp)+'%';
+}
+calc();
+</script>

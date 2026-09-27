@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Percentage Calculator – Percentages Made Easy</title>
+<meta name="description" content="Free percentage calculator. Calculate X% of Y, what percentage X is of Y, and percentage increase or decrease instantly.">
+<style>
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f2f7f4;color:#1d2b24;margin:0;padding:0}
+.tool{max-width:700px;margin:0 auto;padding:24px 16px 48px}
+.tool h1{font-size:1.6rem;margin:0 0 6px;color:#0a5f3d}
+.sub{color:#5c6f64;margin:0 0 20px;font-size:.95rem}
+.card{background:#fff;border:1px solid #dde8e1;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(10,95,61,.06)}
+.card h2{font-size:1.05rem;margin:0 0 12px;color:#0a5f3d}
+label{display:block;font-size:.82rem;color:#5c6f64;margin-bottom:4px;font-weight:600}
+input[type=number]{width:100%;padding:10px 12px;border:1.5px solid #dde8e1;border-radius:9px;font-size:1rem;outline:none}
+input:focus{border-color:#0d7a4f}
+.field{margin-bottom:12px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+.toggle{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.toggle button{flex:1;min-width:150px;padding:10px;border:1.5px solid #dde8e1;background:#fff;border-radius:9px;font-size:.9rem;cursor:pointer;color:#1d2b24}
+.toggle button.on{border-color:#0d7a4f;background:#eaf5ee;font-weight:700;color:#0a5f3d}
+.result{background:linear-gradient(135deg,#0d7a4f,#0a5f3d);color:#fff;border-radius:14px;padding:22px;text-align:center;margin-bottom:16px}
+.result .amt{font-size:2.2rem;font-weight:800;margin:6px 0}
+.result .lbl{opacity:.85;font-size:.9rem}
+.faq{font-size:.88rem;color:#3c4c44}
+.faq summary{cursor:pointer;font-weight:600;color:#0a5f3d;padding:6px 0}
+</style>
+</head>
+<body>
+<div class="tool">
+<h1>🔢 Percentage Calculator</h1>
+<p class="sub">All percentage calculations in one place — instant answers.</p>
+<div class="card">
+<div class="toggle">
+<button id="m1" class="on" onclick="mode(1)">X% of Y</button>
+<button id="m2" onclick="mode(2)">X is what % of Y</button>
+<button id="m3" onclick="mode(3)">% change</button>
+</div>
+<div class="row">
+<div class="field"><label id="l1">Percentage (%)</label><input type="number" id="x" value="20" oninput="calc()"></div>
+<div class="field"><label id="l2">Value</label><input type="number" id="y" value="500" oninput="calc()"></div>
+</div>
+</div>
+<div class="result">
+<div class="lbl" id="rLbl">Result</div>
+<div class="amt" id="rVal">0</div>
+<div class="lbl" id="rExp" style="font-size:.82rem"></div>
+</div>
+<div class="card faq">
+<h2>FAQs</h2>
+<details><summary>How do I calculate a discount?</summary><p>Use "X% of Y" to find the discount amount, then subtract it from the original price.</p></details>
+<details><summary>How do I find percentage increase?</summary><p>Use "% change": enter the old value first, then the new value.</p></details>
+</div>
+</div>
+<script>
+var cm=1;
+function mode(m){cm=m;[1,2,3].forEach(function(i){document.getElementById('m'+i).className=i===m?'on':'';});
+var L={1:['Percentage (%)','Value'],2:['Value X','Value Y'],3:['Old value','New value']}[m];
+document.getElementById('l1').textContent=L[0];document.getElementById('l2').textContent=L[1];calc();}
+function fmt(n){return (Math.round(n*100)/100).toLocaleString('en-US');}
+function calc(){
+var x=parseFloat(document.getElementById('x').value)||0,y=parseFloat(document.getElementById('y').value)||0;
+var v=0,lbl='',exp='';
+if(cm===1){v=x/100*y;lbl=x+'% of '+fmt(y);exp='= ('+x+' ÷ 100) × '+fmt(y);}
+else if(cm===2){v=y!==0?x/y*100:0;lbl=fmt(x)+' is what % of '+fmt(y);exp='= ('+fmt(x)+' ÷ '+fmt(y)+') × 100';}
+else{v=x!==0?(y-x)/x*100:0;lbl='% change from '+fmt(x)+' to '+fmt(y);exp=v>=0?'▲ '+fmt(v)+'% increase':'▼ '+fmt(Math.abs(v))+'% decrease';}
+document.getElementById('rVal').textContent=fmt(v)+(cm===1?'':'%');
+document.getElementById('rLbl').textContent=lbl;
+document.getElementById('rExp').textContent=cm===3?exp:exp;
+}
+calc();
+</script>
+</body>
+</html>

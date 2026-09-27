@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freelancer Tax Calculator Pakistan – 0.25% PSEB Tax</title>
+<meta name="description" content="Free freelancer tax calculator for Pakistan. Calculate your 0.25% final tax on freelance export income under PSEB / Section 154A.">
+<style>
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f2f7f4;color:#1d2b24;margin:0;padding:0}
+.tool{max-width:700px;margin:0 auto;padding:24px 16px 48px}
+.tool h1{font-size:1.6rem;margin:0 0 6px;color:#0a5f3d}
+.sub{color:#5c6f64;margin:0 0 20px;font-size:.95rem}
+.badge{display:inline-block;background:#e6f4ea;color:#0b6b3a;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:12px}
+.card{background:#fff;border:1px solid #dde8e1;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(10,95,61,.06)}
+.card h2{font-size:1.05rem;margin:0 0 12px;color:#0a5f3d}
+label{display:block;font-size:.82rem;color:#5c6f64;margin-bottom:4px;font-weight:600}
+input[type=number]{width:100%;padding:10px 12px;border:1.5px solid #dde8e1;border-radius:9px;font-size:1rem;outline:none}
+input:focus{border-color:#0d7a4f}
+.field{margin-bottom:12px}
+.toggle{display:flex;gap:8px;margin-bottom:4px}
+.toggle button{flex:1;padding:10px;border:1.5px solid #dde8e1;background:#fff;border-radius:9px;font-size:.9rem;cursor:pointer;color:#1d2b24}
+.toggle button.on{border-color:#0d7a4f;background:#eaf5ee;font-weight:700;color:#0a5f3d}
+.result{background:linear-gradient(135deg,#0d7a4f,#0a5f3d);color:#fff;border-radius:14px;padding:22px;text-align:center;margin-bottom:16px}
+.result .amt{font-size:2.2rem;font-weight:800;margin:6px 0}
+.result .lbl{opacity:.85;font-size:.9rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.stat{background:rgba(255,255,255,.12);border-radius:10px;padding:10px}
+.stat .v{font-size:1.1rem;font-weight:800}
+.stat .l{font-size:.75rem;opacity:.85}
+.faq{font-size:.88rem;color:#3c4c44}
+.faq summary{cursor:pointer;font-weight:600;color:#0a5f3d;padding:6px 0}
+.note{font-size:.8rem;color:#5c6f64;background:#fff8e6;border:1px solid #f0dfa8;border-radius:10px;padding:12px 14px}
+.warn{font-size:.85rem;color:#7c2d12;background:#fef3e6;border:1px solid #f0cfa8;border-radius:10px;padding:12px 14px;margin-bottom:16px}
+</style>
+</head>
+<body>
+<div class="tool">
+<span class="badge">✓ Section 154A · FY 2026-27</span>
+<h1>💻 Freelancer Tax Calculator Pakistan</h1>
+<p class="sub">Calculate the 0.25% final tax on your freelance export income.</p>
+<div class="card">
+<div class="field"><label>Annual freelance income (PKR)</label><input type="number" id="inc" value="1200000" min="0" oninput="calc()"></div>
+<label>Are you registered with PSEB?</label>
+<div class="toggle">
+<button id="yBtn" class="on" onclick="setReg(true)">Yes, PSEB registered</button>
+<button id="nBtn" onclick="setReg(false)">Not registered</button>
+</div>
+</div>
+<div id="okBox">
+<div class="result">
+<div class="lbl">Annual tax payable (0.25% final tax)</div>
+<div class="amt" id="rTax">PKR 0</div>
+<div class="grid2">
+<div class="stat"><div class="v" id="rM">PKR 0</div><div class="l">Per month</div></div>
+<div class="stat"><div class="v" id="rNet">PKR 0</div><div class="l">Annual take-home</div></div>
+</div>
+</div>
+</div>
+<div id="warnBox" class="warn" style="display:none">⚠️ Without PSEB registration you <b>cannot</b> use the 0.25% final tax rate — normal income tax slabs apply instead (which are much higher). <b>Register free at pseb.org.pk</b>, file your annual return, and route payments through banking channels to qualify.</div>
+<div class="note">⚠️ Estimate only. The 0.25% rate is a <b>final tax</b> for PSEB-registered IT/ITeS exporters under Section 154A — no further tax on this income. Keep PRA/FBR filings up to date.</div>
+<div class="card faq" style="margin-top:16px">
+<h2>FAQs</h2>
+<details><summary>Who qualifies for 0.25% freelancer tax?</summary><p>IT & ITeS exporters (freelancers, software houses) registered with PSEB who bring income through official banking channels and file annual returns.</p></details>
+<details><summary>Is PSEB registration free?</summary><p>Yes — freelancers can register free on the PSEB website.</p></details>
+<details><summary>What if I'm not registered?</summary><p>Then your freelance income is taxed under normal individual slabs (up to 35%) — registration saves you a fortune.</p></details>
+</div>
+</div>
+<script>
+var reg=true;
+function setReg(v){reg=v;document.getElementById('yBtn').className=v?'on':'';document.getElementById('nBtn').className=!v?'on':'';calc();}
+function fmt(n){return 'PKR '+Math.round(n).toLocaleString('en-US');}
+function calc(){
+var inc=parseFloat(document.getElementById('inc').value)||0;
+document.getElementById('okBox').style.display=reg?'block':'none';
+document.getElementById('warnBox').style.display=reg?'none':'block';
+if(!reg)return;
+var tax=inc*0.0025;
+document.getElementById('rTax').textContent=fmt(tax);
+document.getElementById('rM').textContent=fmt(tax/12);
+document.getElementById('rNet').textContent=fmt(inc-tax);
+}
+calc();
+</script>
+</body>
+</html>

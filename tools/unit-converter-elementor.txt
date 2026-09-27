@@ -1,0 +1,74 @@
+<style>
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f2f7f4;color:#1d2b24;margin:0;padding:0}
+.tool{max-width:700px;margin:0 auto;padding:24px 16px 48px}
+.tool h1{font-size:1.6rem;margin:0 0 6px;color:#0a5f3d}
+.sub{color:#5c6f64;margin:0 0 20px;font-size:.95rem}
+.card{background:#fff;border:1px solid #dde8e1;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(10,95,61,.06)}
+label{display:block;font-size:.82rem;color:#5c6f64;margin-bottom:4px;font-weight:600}
+input[type=number],select{width:100%;padding:10px 12px;border:1.5px solid #dde8e1;border-radius:9px;font-size:1rem;outline:none;background:#fff}
+input:focus,select:focus{border-color:#0d7a4f}
+.field{margin-bottom:12px}
+.row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end}
+.swap{background:#eaf5ee;border:1.5px solid #0d7a4f;color:#0a5f3d;border-radius:9px;font-size:1.2rem;cursor:pointer;height:44px;width:44px}
+.toggle{display:flex;gap:8px;margin-bottom:16px}
+.toggle button{flex:1;padding:10px;border:1.5px solid #dde8e1;background:#fff;border-radius:9px;font-size:.9rem;cursor:pointer;color:#1d2b24}
+.toggle button.on{border-color:#0d7a4f;background:#eaf5ee;font-weight:700;color:#0a5f3d}
+.result{background:linear-gradient(135deg,#0d7a4f,#0a5f3d);color:#fff;border-radius:14px;padding:22px;text-align:center;margin-bottom:16px}
+.result .amt{font-size:1.9rem;font-weight:800;margin:6px 0;word-break:break-word}
+.result .lbl{opacity:.85;font-size:.9rem}
+.faq{font-size:.88rem;color:#3c4c44}
+.faq summary{cursor:pointer;font-weight:600;color:#0a5f3d;padding:6px 0}
+</style>
+<div class="tool">
+<h1>📏 Unit Converter</h1>
+<p class="sub">Convert length, weight & temperature units instantly.</p>
+<div class="card">
+<div class="toggle">
+<button id="cL" class="on" onclick="cat('L')">Length</button>
+<button id="cW" onclick="cat('W')">Weight</button>
+<button id="cT" onclick="cat('T')">Temperature</button>
+</div>
+<div class="field"><label>Value</label><input type="number" id="val" value="1" oninput="calc()"></div>
+<div class="row">
+<div class="field"><label>From</label><select id="from" onchange="calc()"></select></div>
+<button class="swap" onclick="swap()" title="Swap units">⇄</button>
+<div class="field"><label>To</label><select id="to" onchange="calc()"></select></div>
+</div>
+</div>
+<div class="result">
+<div class="lbl" id="rLbl">Result</div>
+<div class="amt" id="rVal">—</div>
+</div>
+<div class="card faq">
+<h2>FAQs</h2>
+<details><summary>How many feet are in a meter?</summary><p>1 meter = 3.28084 feet.</p></details>
+<details><summary>How to convert Celsius to Fahrenheit?</summary><p>°F = (°C × 9/5) + 32.</p></details>
+</div>
+</div>
+<script>
+var U={
+L:{name:'Length',base:'m',units:{'Kilometers (km)':1000,'Meters (m)':1,'Centimeters (cm)':0.01,'Millimeters (mm)':0.001,'Miles (mi)':1609.344,'Yards (yd)':0.9144,'Feet (ft)':0.3048,'Inches (in)':0.0254}},
+W:{name:'Weight',base:'kg',units:{'Kilograms (kg)':1,'Grams (g)':0.001,'Pounds (lb)':0.45359237,'Ounces (oz)':0.028349523125,'Tonnes (t)':1000}},
+T:{name:'Temperature',units:{'Celsius (°C)':'C','Fahrenheit (°F)':'F','Kelvin (K)':'K'}}
+};
+var cc='L';
+function cat(c){cc=c;['L','W','T'].forEach(function(k){document.getElementById('c'+k).className=k===c?'on':'';});
+var f=document.getElementById('from'),t=document.getElementById('to'),opts='';
+Object.keys(U[c].units).forEach(function(k){opts+='<option>'+k+'</option>';});
+f.innerHTML=opts;t.innerHTML=opts;t.selectedIndex=1;calc();}
+function swap(){var f=document.getElementById('from'),t=document.getElementById('to'),i=f.selectedIndex;f.selectedIndex=t.selectedIndex;t.selectedIndex=i;calc();}
+function toC(v,u){return u==='C'?v:u==='F'?(v-32)*5/9:v-273.15;}
+function fromC(v,u){return u==='C'?v:u==='F'?v*9/5+32:v+273.15;}
+function fmt(n){if(!isFinite(n))return'—';var a=Math.abs(n);return(a!==0&&(a>=1e9||a<1e-6))?n.toExponential(4):(+n.toFixed(6)).toLocaleString('en-US');}
+function calc(){
+var v=parseFloat(document.getElementById('val').value),f=document.getElementById('from').value,t=document.getElementById('to').value;
+if(isNaN(v)){document.getElementById('rVal').textContent='—';return;}
+var r;
+if(cc==='T'){r=fromC(toC(v,U.T.units[f]),U.T.units[t]);}
+else{r=v*U[cc].units[f]/U[cc].units[t];}
+document.getElementById('rVal').textContent=fmt(v)+' '+f+' = '+fmt(r)+' '+t;
+document.getElementById('rLbl').textContent=U[cc].name+' conversion';
+}
+cat('L');
+</script>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Currency Converter Pakistan – USD to PKR & More</title>
+<meta name="description" content="Free currency converter for Pakistan. Convert USD, AED, SAR to PKR and more with editable live rates.">
+<style>
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f2f7f4;color:#1d2b24;margin:0;padding:0}
+.tool{max-width:700px;margin:0 auto;padding:24px 16px 48px}
+.tool h1{font-size:1.6rem;margin:0 0 6px;color:#0a5f3d}
+.sub{color:#5c6f64;margin:0 0 20px;font-size:.95rem}
+.badge{display:inline-block;background:#e6f4ea;color:#0b6b3a;font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:12px}
+.card{background:#fff;border:1px solid #dde8e1;border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(10,95,61,.06)}
+.card h2{font-size:1.05rem;margin:0 0 12px;color:#0a5f3d}
+label{display:block;font-size:.82rem;color:#5c6f64;margin-bottom:4px;font-weight:600}
+input[type=number],select{width:100%;padding:10px 12px;border:1.5px solid #dde8e1;border-radius:9px;font-size:1rem;outline:none;background:#fff}
+input:focus,select:focus{border-color:#0d7a4f}
+.field{margin-bottom:12px}
+.row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end}
+.swap{background:#eaf5ee;border:1.5px solid #0d7a4f;color:#0a5f3d;border-radius:9px;font-size:1.2rem;cursor:pointer;height:44px;width:44px}
+.result{background:linear-gradient(135deg,#0d7a4f,#0a5f3d);color:#fff;border-radius:14px;padding:22px;text-align:center;margin-bottom:16px}
+.result .amt{font-size:2rem;font-weight:800;margin:6px 0;word-break:break-word}
+.result .lbl{opacity:.85;font-size:.9rem}
+.rates{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.rates{grid-template-columns:1fr}}
+.rate{display:flex;align-items:center;gap:8px}
+.rate b{min-width:44px;font-size:.9rem}
+.rate input{padding:8px 10px;font-size:.9rem}
+.faq{font-size:.88rem;color:#3c4c44}
+.faq summary{cursor:pointer;font-weight:600;color:#0a5f3d;padding:6px 0}
+.note{font-size:.8rem;color:#5c6f64;background:#fff8e6;border:1px solid #f0dfa8;border-radius:10px;padding:12px 14px}
+</style>
+</head>
+<body>
+<div class="tool">
+<span class="badge">✓ Rates updated: 27 Sep 2026</span>
+<h1>💱 Currency Converter Pakistan</h1>
+<p class="sub">Convert USD, AED, SAR & PKR with editable rates.</p>
+<div class="card">
+<div class="field"><label>Amount</label><input type="number" id="amt" value="100" min="0" oninput="calc()"></div>
+<div class="row">
+<div class="field"><label>From</label><select id="from" onchange="calc()"><option value="USD">USD – US Dollar</option><option value="PKR">PKR – Pakistani Rupee</option><option value="AED">AED – UAE Dirham</option><option value="SAR">SAR – Saudi Riyal</option></select></div>
+<button class="swap" onclick="swap()" title="Swap">⇄</button>
+<div class="field"><label>To</label><select id="to" onchange="calc()"><option value="PKR">PKR – Pakistani Rupee</option><option value="USD">USD – US Dollar</option><option value="AED">AED – UAE Dirham</option><option value="SAR">SAR – Saudi Riyal</option></select></div>
+</div>
+</div>
+<div class="result">
+<div class="lbl" id="rLbl">Conversion</div>
+<div class="amt" id="rVal">—</div>
+<div class="lbl" id="rRate" style="font-size:.8rem"></div>
+</div>
+<div class="card">
+<h2>Exchange Rates (per 1 USD — tap to update)</h2>
+<div class="rates">
+<div class="rate"><b>PKR</b><input type="number" id="rt_PKR" value="277.40" step="0.01" oninput="calc()"></div>
+<div class="rate"><b>AED</b><input type="number" id="rt_AED" value="3.6725" step="0.0001" oninput="calc()"></div>
+<div class="rate"><b>SAR</b><input type="number" id="rt_SAR" value="3.75" step="0.01" oninput="calc()"></div>
+<div class="rate"><b>USD</b><input type="number" value="1" disabled style="background:#f2f7f4"></div>
+</div>
+</div>
+<div class="note">⚠️ Indicative interbank rates. Banks & exchange companies add their own margin — actual rates may differ slightly.</div>
+<div class="card faq" style="margin-top:16px">
+<h2>FAQs</h2>
+<details><summary>What is today's dollar rate in Pakistan?</summary><p>Around <b>PKR 277.4</b> per USD (interbank, 27 Sep 2026). Update the rate above for the latest figure.</p></details>
+<details><summary>Why do bank rates differ?</summary><p>Banks and exchangers add a margin over the interbank rate, plus fees for transfers.</p></details>
+</div>
+</div>
+<script>
+var SYM={USD:'$',PKR:'Rs ',AED:'د.إ ',SAR:'﷼ '};
+function rate(c){if(c==='USD')return 1;var v=parseFloat(document.getElementById('rt_'+c).value);return(v>0)?v:1;}
+function fmt(n){return(Math.round(n*100)/100).toLocaleString('en-US');}
+function swap(){var f=document.getElementById('from'),t=document.getElementById('to'),i=f.selectedIndex;f.selectedIndex=t.selectedIndex;t.selectedIndex=i;calc();}
+function calc(){
+var a=parseFloat(document.getElementById('amt').value)||0,
+f=document.getElementById('from').value,t=document.getElementById('to').value;
+var usd=a/rate(f), out=usd*rate(t);
+document.getElementById('rVal').textContent=SYM[f]+fmt(a)+' = '+SYM[t]+fmt(out);
+document.getElementById('rLbl').textContent=f+' → '+t;
+document.getElementById('rRate').textContent='1 '+f+' = '+fmt(rate(t)/rate(f))+' '+t;
+}
+calc();
+</script>
+</body>
+</html>
